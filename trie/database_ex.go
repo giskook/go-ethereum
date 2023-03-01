@@ -19,7 +19,15 @@ type Cache struct {
 	preimages map[common.Hash][]byte
 }
 
-func (b *BatchEx) PutDirties(key []byte, value []byte) error {
+func NewCache() *Cache {
+	return &Cache{
+		dirties:   make(map[common.Hash]*cachedNode),
+		preimages: make(map[common.Hash][]byte),
+	}
+}
+
+func (b *BatchEx) PutDirties(key common.Hash, node *cachedNode) error {
+
 }
 
 type BatchEx struct {
