@@ -87,7 +87,8 @@ type Database struct {
 	childrenSize common.StorageSize // Storage size of the external children tracking
 	preimages    *preimageStore     // The store for caching preimages
 
-	lock sync.RWMutex
+	lock        sync.RWMutex
+	acProcessor *ACProcessor
 }
 
 // rawNode is a simple binary blob used to differentiate between collapsed trie
@@ -299,7 +300,8 @@ func NewDatabaseWithConfig(diskdb ethdb.KeyValueStore, config *Config) *Database
 		dirties: map[common.Hash]*cachedNode{{}: {
 			children: make(map[common.Hash]uint16),
 		}},
-		preimages: preimage,
+		preimages:   preimage,
+		acProcessor: NewACProcessor(diskdb),
 	}
 	return db
 }
