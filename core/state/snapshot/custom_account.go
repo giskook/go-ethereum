@@ -7,15 +7,6 @@ import (
 	"math/big"
 )
 
-type Address = []byte
-
-type PubKey interface {
-	Address() Address
-	Bytes() []byte
-	VerifyBytes(msg []byte, sig []byte) bool
-	Equals(PubKey) bool
-}
-
 // CustomAccount is a modified version of a state.Account, where the root is replaced
 // with a byte slice. This format can be used to represent full-consensus format
 // or slim-snapshot format which replaces the empty root and code hash as nil
@@ -28,15 +19,15 @@ type CustomAccount struct {
 	Root          []byte
 	CodeHash      []byte
 	AccountNumber uint64
-	PubKey        PubKey
+	PubKeyRLP     []byte
 }
 
 // SlimAccountRLPCustom converts a state.Account content into a slim snapshot
 // version RLP encoded.
 //
 // SlimAccountRLPCustom add accountNumber and pubKey to encode
-func SlimAccountRLPCustom(nonce uint64, balance *big.Int, root common.Hash, codehash []byte, accountNumber uint64, pubKey PubKey) []byte {
-	data, err := rlp.EncodeToBytes(SlimAccountCustom(nonce, balance, root, codehash, accountNumber, pubKey))
+func SlimAccountRLPCustom(nonce uint64, balance *big.Int, root common.Hash, codehash []byte, accountNumber uint64, pubKeyRLP []byte) []byte {
+	data, err := rlp.EncodeToBytes(SlimAccountCustom(nonce, balance, root, codehash, accountNumber, pubKeyRLP))
 	if err != nil {
 		panic(err)
 	}
@@ -46,12 +37,12 @@ func SlimAccountRLPCustom(nonce uint64, balance *big.Int, root common.Hash, code
 // SlimAccountCustom converts a state.Account content into a slim snapshot account
 //
 // SlimAccountCustom add accountNumber and pubKey
-func SlimAccountCustom(nonce uint64, balance *big.Int, root common.Hash, codehash []byte, accountNumber uint64, pubKey PubKey) CustomAccount {
+func SlimAccountCustom(nonce uint64, balance *big.Int, root common.Hash, codehash []byte, accountNumber uint64, pubKeyRLP []byte) CustomAccount {
 	slim := CustomAccount{
 		Nonce:         nonce,
 		Balance:       balance,
 		AccountNumber: accountNumber,
-		PubKey:        pubKey,
+		PubKeyRLP:     pubKeyRLP,
 	}
 	if root != emptyRoot {
 		slim.Root = root[:]

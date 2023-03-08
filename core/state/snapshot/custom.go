@@ -13,7 +13,7 @@ import (
 
 // Retriever custom
 type Retriever interface {
-	DecodeAccount(bz []byte) (nonce uint64, balance *big.Int, root common.Hash, codeHash []byte, accountNumber uint64, pubKey PubKey)
+	DecodeAccount(bz []byte) (nonce uint64, balance *big.Int, root common.Hash, codeHash []byte, accountNumber uint64, pubKeyRLP []byte)
 }
 
 // NewCustom attempts to load an already existing snapshot from a persistent key-value

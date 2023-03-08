@@ -611,10 +611,10 @@ func (dl *diskLayer) generate(stats *generatorStats) {
 			Root          common.Hash
 			CodeHash      []byte
 			AccountNumber uint64
-			PublicKey     PubKey
+			PubKeyRLP     []byte
 		}
 		// use custom method to decode account
-		acc.Nonce, acc.Balance, acc.Root, acc.CodeHash, acc.AccountNumber, acc.PublicKey = dl.DecodeAccount(val)
+		acc.Nonce, acc.Balance, acc.Root, acc.CodeHash, acc.AccountNumber, acc.PubKeyRLP = dl.DecodeAccount(val)
 		//		if err := rlp.DecodeBytes(val, &acc); err != nil {
 		//			log.Crit("Invalid account encountered during snapshot creation", "err", err)
 		//		}
@@ -630,7 +630,7 @@ func (dl *diskLayer) generate(stats *generatorStats) {
 				}
 				snapRecoveredAccountMeter.Mark(1)
 			} else {
-				data := SlimAccountRLPCustom(acc.Nonce, acc.Balance, acc.Root, acc.CodeHash, acc.AccountNumber, acc.PublicKey)
+				data := SlimAccountRLPCustom(acc.Nonce, acc.Balance, acc.Root, acc.CodeHash, acc.AccountNumber, acc.PubKeyRLP)
 				dataLen = len(data)
 				rawdb.WriteAccountSnapshot(batch, accountHash, data)
 				snapGeneratedAccountMeter.Mark(1)
