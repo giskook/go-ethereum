@@ -12,12 +12,13 @@ import (
 // or slim-snapshot format which replaces the empty root and code hash as nil
 // byte slice.
 //
-// CustomAccount include AccountNumber and PubKey than original Account
+// CustomAccount include Extra and original Account
 type CustomAccount struct {
 	Nonce         uint64
 	Balance       *big.Int
 	Root          []byte
 	CodeHash      []byte
+	Extra         []byte
 	AccountNumber uint64
 	PubKeyRLP     []byte
 }
@@ -26,8 +27,8 @@ type CustomAccount struct {
 // version RLP encoded.
 //
 // SlimAccountRLPCustom add accountNumber and pubKey to encode
-func SlimAccountRLPCustom(nonce uint64, balance *big.Int, root common.Hash, codehash []byte, accountNumber uint64, pubKeyRLP []byte) []byte {
-	data, err := rlp.EncodeToBytes(SlimAccountCustom(nonce, balance, root, codehash, accountNumber, pubKeyRLP))
+func SlimAccountRLPCustom(nonce uint64, balance *big.Int, root common.Hash, codehash []byte, extra []byte) []byte {
+	data, err := rlp.EncodeToBytes(SlimAccountCustom(nonce, balance, root, codehash, extra))
 	if err != nil {
 		panic(err)
 	}
@@ -36,13 +37,12 @@ func SlimAccountRLPCustom(nonce uint64, balance *big.Int, root common.Hash, code
 
 // SlimAccountCustom converts a state.Account content into a slim snapshot account
 //
-// SlimAccountCustom add accountNumber and pubKey
-func SlimAccountCustom(nonce uint64, balance *big.Int, root common.Hash, codehash []byte, accountNumber uint64, pubKeyRLP []byte) CustomAccount {
+// SlimAccountCustom add extra
+func SlimAccountCustom(nonce uint64, balance *big.Int, root common.Hash, codehash []byte, extra []byte) CustomAccount {
 	slim := CustomAccount{
-		Nonce:         nonce,
-		Balance:       balance,
-		AccountNumber: accountNumber,
-		PubKeyRLP:     pubKeyRLP,
+		Nonce:   nonce,
+		Balance: balance,
+		Extra:   extra,
 	}
 	if root != emptyRoot {
 		slim.Root = root[:]
