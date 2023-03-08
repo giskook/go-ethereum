@@ -14,13 +14,11 @@ import (
 //
 // CustomAccount include Extra and original Account
 type CustomAccount struct {
-	Nonce         uint64
-	Balance       *big.Int
-	Root          []byte
-	CodeHash      []byte
-	Extra         []byte
-	AccountNumber uint64
-	PubKeyRLP     []byte
+	Nonce    uint64
+	Balance  *big.Int
+	Root     []byte
+	CodeHash []byte
+	Extra    []byte
 }
 
 // SlimAccountRLPCustom converts a state.Account content into a slim snapshot
