@@ -11,10 +11,28 @@ import (
 	"time"
 )
 
+// Retriever custom
 type Retriever interface {
-	DecodeAccount(bz []byte) (nonce uint64, balance *big.Int, root common.Hash, codeHash []byte)
+	DecodeAccount(bz []byte) (nonce uint64, balance *big.Int, root common.Hash, codeHash []byte, accountNumber uint64, pubKey PubKey)
 }
 
+// NewCustom attempts to load an already existing snapshot from a persistent key-value
+// store (with a number of memory layers from a journal), ensuring that the head
+// of the snapshot matches the expected one.
+//
+// If the snapshot is missing or the disk layer is broken, the snapshot will be
+// reconstructed using both the existing data and the state trie.
+// The repair happens on a background thread.
+//
+// If the memory layers in the journal do not match the disk layer (e.g. there is
+// a gap) or the journal is missing, there are two repair cases:
+//
+// - if the 'recovery' parameter is true, all memory diff-layers will be discarded.
+//   This case happens when the snapshot is 'ahead' of the state trie.
+// - otherwise, the entire snapshot is considered invalid and will be recreated on
+//   a background thread.
+//
+// NewCustom use retriever to decode Account
 func NewCustom(diskdb ethdb.KeyValueStore, triedb *trie.Database, cache int, root common.Hash, async bool, rebuild bool, recovery bool, retriever Retriever) (*Tree, error) {
 	// Create a new, empty snapshot tree
 	snap := &Tree{
@@ -49,6 +67,11 @@ func NewCustom(diskdb ethdb.KeyValueStore, triedb *trie.Database, cache int, roo
 	return snap, nil
 }
 
+// generateSnapshotCustom regenerates a brand new snapshot based on an existing state
+// database and head block asynchronously. The snapshot is returned immediately
+// and generation is continued in the background until done.
+//
+// generateSnapshotCustom is transformed by the retriever to decode the account
 func generateSnapshotCustom(diskdb ethdb.KeyValueStore, triedb *trie.Database, cache int, root common.Hash, retriever Retriever) *diskLayer {
 	// Create a new disk layer with an initialized state marker at zero
 	var (
