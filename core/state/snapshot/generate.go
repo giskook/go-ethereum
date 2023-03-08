@@ -611,9 +611,11 @@ func (dl *diskLayer) generate(stats *generatorStats) {
 			Root     common.Hash
 			CodeHash []byte
 		}
-		if err := rlp.DecodeBytes(val, &acc); err != nil {
-			log.Crit("Invalid account encountered during snapshot creation", "err", err)
-		}
+		// use custom method to decode account
+		acc.Nonce, acc.Balance, acc.Root, acc.CodeHash = dl.DecodeAccount(val)
+		//		if err := rlp.DecodeBytes(val, &acc); err != nil {
+		//			log.Crit("Invalid account encountered during snapshot creation", "err", err)
+		//		}
 		// If the account is not yet in-progress, write it out
 		if accMarker == nil || !bytes.Equal(accountHash[:], accMarker) {
 			dataLen := len(val) // Approximate size, saves us a round of RLP-encoding
