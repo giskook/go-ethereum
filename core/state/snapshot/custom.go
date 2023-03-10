@@ -7,13 +7,12 @@ import (
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/trie"
-	"math/big"
 	"time"
 )
 
 // Retriever custom
 type Retriever interface {
-	DecodeAccount(bz []byte) (nonce uint64, balance *big.Int, root common.Hash, codeHash []byte, Extra []byte)
+	RetrieveStateRoot(bz []byte) common.Hash
 }
 
 // NewCustom attempts to load an already existing snapshot from a persistent key-value

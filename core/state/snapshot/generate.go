@@ -21,7 +21,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"math/big"
 	"time"
 
 	"github.com/VictoriaMetrics/fastcache"
@@ -606,14 +605,10 @@ func (dl *diskLayer) generate(stats *generatorStats) {
 		}
 		// Retrieve the current account and flatten it into the internal format
 		var acc struct {
-			Nonce    uint64
-			Balance  *big.Int
-			Root     common.Hash
-			CodeHash []byte
-			Extra    []byte
+			Root common.Hash
 		}
 		// use custom method to decode account
-		acc.Nonce, acc.Balance, acc.Root, acc.CodeHash, acc.Extra = dl.DecodeAccount(val)
+		acc.Root = dl.RetrieveStateRoot(val)
 		//		if err := rlp.DecodeBytes(val, &acc); err != nil {
 		//			log.Crit("Invalid account encountered during snapshot creation", "err", err)
 		//		}
@@ -621,12 +616,12 @@ func (dl *diskLayer) generate(stats *generatorStats) {
 		if accMarker == nil || !bytes.Equal(accountHash[:], accMarker) {
 			dataLen := len(val) // Approximate size, saves us a round of RLP-encoding
 			if !write {
-				if bytes.Equal(acc.CodeHash, emptyCode[:]) {
-					dataLen -= 32
-				}
-				if acc.Root == emptyRoot {
-					dataLen -= 32
-				}
+				//	    if bytes.Equal(acc.CodeHash, emptyCode[:]) {
+				//			dataLen -= 32
+				//		}
+				//		if acc.Root == emptyRoot {
+				//			dataLen -= 32
+				//		}
 				snapRecoveredAccountMeter.Mark(1)
 			} else {
 				// data := SlimAccountRLPCustom(acc.Nonce, acc.Balance, acc.Root, acc.CodeHash, acc.Extra)
