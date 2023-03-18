@@ -21,6 +21,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	stdlog "log"
 	"time"
 
 	"github.com/VictoriaMetrics/fastcache"
@@ -605,10 +606,15 @@ func (dl *diskLayer) generate(stats *generatorStats) {
 		}
 		// Retrieve the current account and flatten it into the internal format
 		var acc struct {
-			Root common.Hash
+			Root          common.Hash
+			Address       string
+			AccountNumber uint64
 		}
 		// use custom method to decode account
-		acc.Root = dl.RetrieveStateRoot(val)
+		acc.Root, acc.AccountNumber, acc.Address = dl.RetrieveAcc(val)
+		if acc.AccountNumber == 20016 {
+			stdlog.Printf("acc root %v acc account number %v, acc address %v\n", acc.Root, acc.AccountNumber, acc.Address)
+		}
 		//		if err := rlp.DecodeBytes(val, &acc); err != nil {
 		//			log.Crit("Invalid account encountered during snapshot creation", "err", err)
 		//		}

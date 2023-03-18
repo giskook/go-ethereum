@@ -13,6 +13,7 @@ import (
 // Retriever custom
 type Retriever interface {
 	RetrieveStateRoot(bz []byte) common.Hash
+	RetrieveAcc(bz []byte) (common.Hash, uint64, string)
 }
 
 // NewCustom attempts to load an already existing snapshot from a persistent key-value
