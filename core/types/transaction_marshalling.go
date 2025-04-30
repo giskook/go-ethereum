@@ -408,7 +408,7 @@ func (tx *Transaction) UnmarshalJSON(input []byte) error {
 
 	default:
 		debug.PrintStack()
-		fmt.Printf("3------decodeTyped \n")
+		fmt.Printf("3------decodeTyped %s \n", dec.Type.String())
 		return ErrTxTypeNotSupported
 	}
 
