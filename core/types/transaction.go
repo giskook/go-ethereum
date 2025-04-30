@@ -19,9 +19,9 @@ package types
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"math/big"
-	"runtime/debug"
 	"sync/atomic"
 	"time"
 
@@ -204,7 +204,7 @@ func (tx *Transaction) decodeTyped(b []byte) (TxData, error) {
 	case BlobTxType:
 		inner = new(BlobTx)
 	default:
-		debug.PrintStack()
+		fmt.Printf("------decodeTyped %v\n", b[0])
 		return nil, ErrTxTypeNotSupported
 	}
 	err := inner.decode(b[1:])
