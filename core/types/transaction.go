@@ -204,7 +204,7 @@ func (tx *Transaction) decodeTyped(b []byte) (TxData, error) {
 	case BlobTxType:
 		inner = new(BlobTx)
 	default:
-		fmt.Printf("------decodeTyped %v\n", b[0])
+		fmt.Printf("2------decodeTyped %v\n", b[0])
 		return nil, ErrTxTypeNotSupported
 	}
 	err := inner.decode(b[1:])

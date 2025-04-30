@@ -22,7 +22,6 @@ import (
 	"fmt"
 	"io"
 	"math/big"
-	"runtime/debug"
 	"unsafe"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -214,7 +213,7 @@ func (r *Receipt) decodeTyped(b []byte) error {
 		r.Type = b[0]
 		return r.setFromRLP(data)
 	default:
-		debug.PrintStack()
+		fmt.Printf("1------decodeTyped %v\n", b[0])
 		return ErrTxTypeNotSupported
 	}
 }

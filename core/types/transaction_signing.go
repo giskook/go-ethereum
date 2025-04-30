@@ -339,6 +339,7 @@ func (s eip2930Signer) Sender(tx *Transaction) (common.Address, error) {
 		V = new(big.Int).Add(V, big.NewInt(27))
 	default:
 		debug.PrintStack()
+		fmt.Printf("4------decodeTyped \n")
 		return common.Address{}, ErrTxTypeNotSupported
 	}
 	if tx.ChainId().Cmp(s.chainId) != 0 {
@@ -361,6 +362,7 @@ func (s eip2930Signer) SignatureValues(tx *Transaction, sig []byte) (R, S, V *bi
 		V = big.NewInt(int64(sig[64]))
 	default:
 		debug.PrintStack()
+		fmt.Printf("5------decodeTyped \n")
 		return nil, nil, nil, ErrTxTypeNotSupported
 	}
 	return R, S, V, nil
@@ -424,6 +426,7 @@ var big8 = big.NewInt(8)
 func (s EIP155Signer) Sender(tx *Transaction) (common.Address, error) {
 	if tx.Type() != LegacyTxType {
 		debug.PrintStack()
+		fmt.Printf("6------decodeTyped \n")
 		return common.Address{}, ErrTxTypeNotSupported
 	}
 	if !tx.Protected() {
@@ -443,6 +446,7 @@ func (s EIP155Signer) Sender(tx *Transaction) (common.Address, error) {
 func (s EIP155Signer) SignatureValues(tx *Transaction, sig []byte) (R, S, V *big.Int, err error) {
 	if tx.Type() != LegacyTxType {
 		debug.PrintStack()
+		fmt.Printf("7------decodeTyped \n")
 		return nil, nil, nil, ErrTxTypeNotSupported
 	}
 	R, S, V = decodeSignature(sig)
@@ -489,6 +493,7 @@ func (hs HomesteadSigner) SignatureValues(tx *Transaction, sig []byte) (r, s, v 
 func (hs HomesteadSigner) Sender(tx *Transaction) (common.Address, error) {
 	if tx.Type() != LegacyTxType {
 		debug.PrintStack()
+		fmt.Printf("8------decodeTyped \n")
 		return common.Address{}, ErrTxTypeNotSupported
 	}
 	v, r, s := tx.RawSignatureValues()
@@ -511,6 +516,7 @@ func (s FrontierSigner) Equal(s2 Signer) bool {
 func (fs FrontierSigner) Sender(tx *Transaction) (common.Address, error) {
 	if tx.Type() != LegacyTxType {
 		debug.PrintStack()
+		fmt.Printf("9------decodeTyped \n")
 		return common.Address{}, ErrTxTypeNotSupported
 	}
 	v, r, s := tx.RawSignatureValues()
@@ -522,6 +528,7 @@ func (fs FrontierSigner) Sender(tx *Transaction) (common.Address, error) {
 func (fs FrontierSigner) SignatureValues(tx *Transaction, sig []byte) (r, s, v *big.Int, err error) {
 	if tx.Type() != LegacyTxType {
 		debug.PrintStack()
+		fmt.Printf("10------decodeTyped \n")
 		return nil, nil, nil, ErrTxTypeNotSupported
 	}
 	r, s, v = decodeSignature(sig)

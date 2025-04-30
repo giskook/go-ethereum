@@ -148,7 +148,7 @@ func (ec *Client) getBlock(ctx context.Context, method string, args ...interface
 
 	var body rpcBlock
 	if err := json.Unmarshal(raw, &body); err != nil {
-		fmt.Printf("unMarshal error %v %v\n", err, string(raw))
+		fmt.Printf("unMarshal error %v \n", err)
 		return nil, err
 	}
 	// Quick-verify transaction and uncle lists. This mostly helps with debugging the server.

@@ -19,7 +19,9 @@ package types
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"math/big"
+	"runtime/debug"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -405,6 +407,8 @@ func (tx *Transaction) UnmarshalJSON(input []byte) error {
 		}
 
 	default:
+		debug.PrintStack()
+		fmt.Printf("3------decodeTyped \n")
 		return ErrTxTypeNotSupported
 	}
 
