@@ -129,14 +129,18 @@ func (ec *Client) getBlock(ctx context.Context, method string, args ...interface
 	var raw json.RawMessage
 	err := ec.c.CallContext(ctx, &raw, method, args...)
 	if err != nil {
+		fmt.Printf("getBlock error: %v\n", err)
 		return nil, err
 	}
 
 	// Decode header and transactions.
 	var head *types.Header
 	if err := json.Unmarshal(raw, &head); err != nil {
+		fmt.Printf("unMarshal error: %v\n", err)
+		fmt.Printf("unMarshal error: %v\n", raw)
 		return nil, err
 	}
+	fmt.Printf("unMarshal ok\n")
 	// When the block is not found, the API returns JSON null.
 	if head == nil {
 		return nil, ethereum.NotFound
@@ -159,6 +163,7 @@ func (ec *Client) getBlock(ctx context.Context, method string, args ...interface
 	if head.TxHash != types.EmptyTxsHash && len(body.Transactions) == 0 {
 		return nil, errors.New("server returned empty transaction list but block header indicates transactions")
 	}
+	fmt.Printf("unMarshal body ok\n")
 	// Load uncles because they are not included in the block response.
 	var uncles []*types.Header
 	if len(body.UncleHashes) > 0 {
